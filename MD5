@@ -1,13 +1,17 @@
-7b9d99cbf6cc0c9ede94a2300cb86567 *DESCRIPTION
+73e0acbb98382f69c7e9645693757718 *DESCRIPTION
 a0f621aa5ef981d652da4667c41c58fb *NAMESPACE
+1c6369b06b8fc88f89faf9d023ff89ab *NEWS
 e88e863ae2faf268913abc4d4b933cab *R/RcppExports.R
 a8276721726c2abe539e6a0c2b7d6c51 *R/fastphase.R
 6e5181689e3356d40e34343968ab4aff *R/knockoffs.R
 227fab1bfb48933afd062a07cd782eb4 *R/models.R
-89eb9f686de1876d388c00c5ce046a40 *build/vignette.rds
+4aca8fbf88704d2107aa83e3169edcf7 *build/vignette.rds
 b27c175b9693d570cfeaeefd9893f881 *inst/doc/SNPknock.R
 a71f4f7bf3636726d871db1b962cb040 *inst/doc/SNPknock.Rmd
-b19528e0999b3e60e2624a1e41d7571a *inst/doc/SNPknock.html
+daef2968ded9046512dea5cab854c87b *inst/doc/SNPknock.html
+c596299b1b87b1079de9fc1f520ceff5 *inst/doc/genotypes.R
+3a5dbb70e281e0704ef00a42751bb6cf *inst/doc/genotypes.Rmd
+236fdee3f418a550a25ffc856ed11235 *inst/doc/genotypes.html
 5bcd199c7ce0b166d0fd76fb89c507ac *inst/extdata/X.RData
 c537a1b83a2a1c6359e47d55ee111f16 *inst/extdata/X.inp
 ad52dedfa80e7b0bbdc79c39fa143752 *inst/extdata/X_alphahat.txt
@@ -44,4 +48,4 @@ e5d2b24c2a42bd18773d48efea392111 *src/utils.h
 1cfb66354fe00f78d69ac6b793fbb38c *tests/testthat/helper_test.R
 6e4f3613690eba303357ce0535ba52f1 *tests/testthat/test_knockoffs.R
 a71f4f7bf3636726d871db1b962cb040 *vignettes/SNPknock.Rmd
-2b8b178af3d977c7b24e8fe7642c11e1 *vignettes/genotypes.Rmd
+3a5dbb70e281e0704ef00a42751bb6cf *vignettes/genotypes.Rmd
