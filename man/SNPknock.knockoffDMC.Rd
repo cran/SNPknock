@@ -2,21 +2,26 @@
 % Please edit documentation in R/knockoffs.R
 \name{SNPknock.knockoffDMC}
 \alias{SNPknock.knockoffDMC}
-\title{Sample knockoff copies of a discrete Markov chain.}
+\title{Knockoff copies of a discrete Markov chain}
 \usage{
-SNPknock.knockoffDMC(X, pInit, Q, seed = 123)
+SNPknock.knockoffDMC(X, pInit, Q, seed = 123, cluster = NULL,
+  display_progress = TRUE)
 }
 \arguments{
-\item{X}{a matrix of size n-by-p containing the original variables.}
+\item{X}{an integer matrix of size n-by-p containing the original variables.}
 
 \item{pInit}{an array of length K, containing the marginal distribution of the states for the first variable.}
 
 \item{Q}{an array of size (p-1,K,K), containing a list of p-1 transition matrices between the K states of the Markov chain.}
 
 \item{seed}{an integer random seed (default: 123).}
+
+\item{cluster}{a computing cluster object created by \link[parallel]{makeCluster} (default: NULL).}
+
+\item{display_progress}{whether to show progress bar (default: TRUE).}
 }
 \value{
-A matrix of size n-by-p containing the knockoff variables.
+An integer matrix of size n-by-p containing the knockoff variables.
 }
 \description{
 This function constructs knockoff copies of variables distributed as a discrete Markov chain.
@@ -40,5 +45,7 @@ Sesia et al., Gene Hunting with Knockoffs for Hidden Markov Models,
   \href{https://statweb.stanford.edu/~candes/papers/HMM_Knockoffs.pdf}{https://statweb.stanford.edu/~candes/papers/HMM_Knockoffs.pdf}
 }
 \seealso{
-Other knockoffs: \code{\link{SNPknock.knockoffHMM}}
+Other knockoffs: \code{\link{SNPknock.knockoffGenotypes}},
+  \code{\link{SNPknock.knockoffHMM}},
+  \code{\link{SNPknock.knockoffHaplotypes}}
 }

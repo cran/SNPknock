@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastphase.R
 \name{loadEMParameters}
 \alias{loadEMParameters}
-\title{Read the files produced by fastPhase}
+\title{Read the files produced by fastPHASE}
 \usage{
 loadEMParameters(data_path)
 }
 \description{
-Read the files produced by fastPhase
+Read the files produced by fastPHASE
 }
 \keyword{internal}

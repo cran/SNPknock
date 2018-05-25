@@ -4,7 +4,7 @@
 \alias{knockoffDMC_wrapper}
 \title{Wrapper for DMC knockoffs}
 \usage{
-knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_)
+knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_, display_progress_)
 }
 \description{
 Wrapper for DMC knockoffs

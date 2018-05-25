@@ -20,10 +20,6 @@
 #ifndef KNOCKOFF_DMC_H
 #define KNOCKOFF_DMC_H
 
-/*
-MF knockoffs for a Discrete Markov Chain model
-*/
-
 #include <vector>
 #include <random>
 #include "utils.h"
@@ -40,7 +36,7 @@ namespace knockoffs {
   private:
     std::vector<double> initP;
     std::vector< matrix > Q;
-    unsigned int p, K;
+    int p, K;
     double tempQ;
     std::vector<double> Z, Z_old, W;
     std::vector<int> Xt;
@@ -48,7 +44,6 @@ namespace knockoffs {
     std::random_device rd;
     std::uniform_real_distribution<> dis; 
   };
-  //int weighted_choice(double U, const std::vector<double> & weights);
 }
 
 #endif

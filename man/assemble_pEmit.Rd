@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastphase.R
 \name{assemble_pEmit}
 \alias{assemble_pEmit}
-\title{Compute the genotype emission distributions based on the fastPhase HMM}
+\title{Compute the genotype emission distributions based on the fastPHASE HMM}
 \usage{
 assemble_pEmit(theta)
 }
 \description{
-Compute the genotype emission distributions based on the fastPhase HMM
+Compute the genotype emission distributions based on the fastPHASE HMM
 }
 \keyword{internal}

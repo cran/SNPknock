@@ -1,4 +1,4 @@
-#' Sample discrete Markov chains.
+#' Sample discrete Markov chains
 #' 
 #' This function draws independent random samples of a discrete Markov chain.
 #' 
@@ -42,10 +42,12 @@ SNPknock.models.sampleDMC <- function(pInit, Q, n=1) {
     W = matrix(Q[j-1,chain[,j-1],],n)
     chain[,j] = rand_weighted(W)
   }
-  return(chain-1)
+  chain = chain - 1
+  storage.mode(chain) = "integer"
+  return(chain)
 }
 
-#' Sample hidden Markov models.
+#' Sample hidden Markov models
 #' 
 #' This function draws independent random samples of an hidden Markov model.
 #' 
@@ -96,7 +98,9 @@ SNPknock.models.sampleHMM <- function(pInit, Q, pEmit, n=1) {
     W = matrix(t(pEmit[j,,chain[,j]]),n)
     emissions[,j] = rand_weighted(W)
   }
-  return(emissions-1)
+  emissions = emissions-1
+  storage.mode(emissions) = "integer"
+  return(emissions)
 }
 
 #' Random sampling from discrete distribution 

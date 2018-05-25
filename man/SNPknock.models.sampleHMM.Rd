@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{SNPknock.models.sampleHMM}
 \alias{SNPknock.models.sampleHMM}
-\title{Sample hidden Markov models.}
+\title{Sample hidden Markov models}
 \usage{
 SNPknock.models.sampleHMM(pInit, Q, pEmit, n = 1)
 }

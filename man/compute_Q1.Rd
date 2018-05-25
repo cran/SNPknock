@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastphase.R
 \name{compute_Q1}
 \alias{compute_Q1}
-\title{Compute the haplotype transition matrices based on the fastPhase HMM}
+\title{Compute the haplotype transition matrices based on the fastPHASE HMM}
 \usage{
 compute_Q1(r, alpha)
 }
 \description{
-Compute the haplotype transition matrices based on the fastPhase HMM
+Compute the haplotype transition matrices based on the fastPHASE HMM
 }
 \keyword{internal}

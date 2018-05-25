@@ -12,9 +12,9 @@
 
 <meta name="author" content="Matteo Sesia (msesia@stanford.edu)" />
 
-<meta name="date" content="2018-01-09" />
+<meta name="date" content="2018-05-25" />
 
-<title>Using SNPknock with Genotype Data</title>
+<title>Using SNPknock with Genetic Data</title>
 
 
 
@@ -68,63 +68,118 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Using SNPknock with Genotype Data</h1>
+<h1 class="title toc-ignore">Using SNPknock with Genetic Data</h1>
 <h4 class="author"><em>Matteo Sesia (<a href="mailto:msesia@stanford.edu">msesia@stanford.edu</a>)</em></h4>
-<h4 class="date"><em>2018-01-09</em></h4>
+<h4 class="date"><em>2018-05-25</em></h4>
 
 
 
-<p>This vignette illustrates the usage of the <code>SNPknock</code> package in combination with the imputation software fastPhase to create knockoff copies of genotype data. Since <code>fastPHASE</code> is not available as an R package, this particular functionality of <code>SNPknock</code> requires the user to first obtain a copy of <code>fastPHASE</code>.</p>
+<p>This vignette illustrates the usage of the <code>SNPknock</code> package in combination with the imputation software fastPHASE to create knockoff copies of unphased genotypes or phased haplotypes <span class="citation">(Sesia, Sabatti, and Candès 2017)</span>. Since <code>fastPHASE</code> is not available as an R package, this particular functionality of <code>SNPknock</code> requires the user to first obtain a copy of <code>fastPHASE</code>.</p>
 <div id="obtaining-fastphase" class="section level2">
 <h2>Obtaining <code>fastPHASE</code></h2>
-<p>fastPHASE is a program to estimate missing genotypes and unobserved haplotypes. It is an implementation of the hidden Markov model described in Scheet &amp; Stephens (2006).</p>
+<p>fastPHASE is a program whose purpose is to estimate missing genotypes and unobserved haplotypes. Its underlying algorithm is based on the hidden Markov model described in <span class="citation">(Scheet and Stephens 2006)</span>.</p>
 <p>Binary executables for Linux and Mac OS are available from <a href="http://scheet.org/software.html" class="uri">http://scheet.org/software.html</a>.</p>
-<p>Download and extract the fastPHASE tarball from the above link and move the <code>fastPHASE</code> executable file into a convenient directory (e.g. “~/bin/”).</p>
+<p>Before continuing with this tutorial, download and extract the fastPHASE tarball from the above link and move the <code>fastPHASE</code> executable file into a convenient directory (e.g. “~/bin/”).</p>
 </div>
-<div id="fitting-the-hidden-markov-model" class="section level2">
-<h2>Fitting the hidden Markov model</h2>
-<p>A small synthetic dataset can be found in the package installation directory, including a synthetic X matrix with 300 SNPs from 100 samples. We can load this with:</p>
+<div id="knockoffs-for-unphased-genotypes" class="section level2">
+<h2>Knockoffs for unphased genotypes</h2>
+<div id="fitting-the-hidden-markov-model-on-genotype-data" class="section level3">
+<h3>Fitting the hidden Markov model on genotype data</h3>
+<p>A small synthetic dataset of 1454 unphased genotype SNPs from 100 individuals can be found in the package installation directory. We can load it with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SNPknock)
-X_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;X.RData&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+X_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;genotypes.RData&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
 <span class="kw">load</span>(X_file)
 <span class="kw">table</span>(X)</code></pre></div>
 <pre><code>## X
 ##     0     1     2 
-##  9925  9135 10940</code></pre>
+## 77522 52963 14915</code></pre>
 <p>Below, we show how to fit a hidden Markov model to this data, with the help of <code>fastPHASE</code>. Since <code>fastPHASE</code> takes as input genotype sequences in “.inp” format, we must first convert the X matrix by calling <code>SNPknock.fp.writeX</code>. By default, this function will write onto a temporary file in the R temporary directory.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert X into the suitable fastPhase input format, write it into a temporary file</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert X into the suitable fastPHASE input format, write it into a temporary file</span>
 <span class="co"># and return the path to that file.</span>
 Xinp_file =<span class="st"> </span><span class="kw">SNPknock.fp.writeX</span>(X)</code></pre></div>
 <p>Assuming that we have already downloaded <code>fastPHASE</code>, we can call it to fit the hidden Markov model to X.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fp_path  =<span class="st"> &quot;~/bin/fastPHASE&quot;</span> <span class="co"># Path to the fastPHASE executable</span>
-<span class="co"># Call fastPhase and return the path to the parameter estimate files</span>
-fp_outPath =<span class="st"> </span><span class="kw">SNPknock.fp.runFastPhase</span>(fp_path, Xinp_file)</code></pre></div>
-<pre><code>## SNPknock could find the fastPhase executable: '~/bin/fastPHASE' does not exist.
-## If you have not downloaded it yet, you can obtain fastPhase from: http://scheet.org/software.html</code></pre>
-<p>Above, the <code>SNPknock</code> package could not find <code>fastPhase</code> because we did not provide the correct path (we cannot include third-party executable files within this package). However, if you install <code>fastPhase</code> separately and provide <code>SNPknock</code> with the correct path, this will work.</p>
+<span class="co"># Call fastPHASE and return the path to the parameter estimate files</span>
+fp_outPath =<span class="st"> </span><span class="kw">SNPknock.fp.runFastPhase</span>(fp_path, Xinp_file, <span class="dt">K =</span> <span class="dv">12</span>, <span class="dt">numit =</span> <span class="dv">15</span>)</code></pre></div>
+<p>Above, the <code>SNPknock</code> package could not find <code>fastPHASE</code> because we did not provide the correct path (we cannot include third-party executable files within this package). However, if you install <code>fastPHASE</code> separately and provide <code>SNPknock</code> with the correct path, this will work.</p>
 <p>If the previous step worked for you, you can find the parameter estimates produced by <code>fastPHASE</code> in the following files:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">r_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_rhat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+alpha_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_alphahat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
 theta_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_thetahat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
-alpha_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_alphahat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)</code></pre></div>
+char_file  =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_origchars&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)</code></pre></div>
 <p>Otherwise, for the sake of this tutorial, you can use the example parameter files provided in the package installation directory:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">r_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;X_rhat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
-theta_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;X_thetahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
-alpha_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;X_alphahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">r_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;genotypes_rhat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+alpha_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;genotypes_alphahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+theta_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;genotypes_thetahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+char_file  =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;genotypes_origchars&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)</code></pre></div>
 <p>Then, we can construct the hidden Markov model with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hmm =<span class="st"> </span><span class="kw">SNPknock.fp.loadFit</span>(r_file, theta_file, alpha_file, X[<span class="dv">1</span>,])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hmm =<span class="st"> </span><span class="kw">SNPknock.fp.loadFit</span>(r_file, alpha_file, theta_file, char_file)</code></pre></div>
 </div>
-<div id="creating-the-knockoffs" class="section level2">
-<h2>Creating the knockoffs</h2>
-<p>Finally, we can use this hidden Markov model to create the knockoffs.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Xk =<span class="st"> </span><span class="kw">SNPknock.knockoffHMM</span>(X, hmm$pInit, hmm$Q, hmm$pEmit)
+</div>
+<div id="generating-knockoff-genotypes" class="section level2">
+<h2>Generating knockoff genotypes</h2>
+<p>Finally, we can use the hidden Markov model created above to generate knockoffs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Xk =<span class="st"> </span><span class="kw">SNPknock.knockoffGenotypes</span>(X, hmm<span class="op">$</span>r, hmm<span class="op">$</span>alpha, hmm<span class="op">$</span>theta)
 <span class="kw">table</span>(Xk)</code></pre></div>
 <pre><code>## Xk
 ##     0     1     2 
-##  9965  9048 10987</code></pre>
+## 76558 54761 14081</code></pre>
+</div>
+<div id="knockoffs-for-phased-haplotypes" class="section level2">
+<h2>Knockoffs for phased haplotypes</h2>
+<div id="fitting-the-hidden-markov-model-on-haplotype-data" class="section level3">
+<h3>Fitting the hidden Markov model on haplotype data</h3>
+<p>A small synthetic dataset of 1454 phased haplotype SNPs from 100 individuals can be found in the package installation directory. We can load it with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SNPknock)
+H_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;haplotypes.RData&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+<span class="kw">load</span>(H_file)
+<span class="kw">table</span>(H)</code></pre></div>
+<pre><code>## H
+##      0      1 
+## 208007  82793</code></pre>
+<p>Below, we show how to fit a hidden Markov model to this data, with the help of <code>fastPHASE</code>. Since <code>fastPHASE</code> takes as input haplotype sequences in “.inp” format, we must first convert the H matrix by calling <code>SNPknock.fp.writeX</code>. By default, this function will write onto a temporary file in the R temporary directory.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert X into the suitable fastPHASE input format, write it into a temporary file</span>
+<span class="co"># and return the path to that file.</span>
+Hinp_file =<span class="st"> </span><span class="kw">SNPknock.fp.writeX</span>(H, <span class="dt">phased =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Assuming that we have already downloaded <code>fastPHASE</code>, we can call it to fit the hidden Markov model to X.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fp_path  =<span class="st"> &quot;~/bin/fastPHASE&quot;</span> <span class="co"># Path to the fastPHASE executable</span>
+<span class="co"># Call fastPHASE and return the path to the parameter estimate files</span>
+fp_outPath =<span class="st"> </span><span class="kw">SNPknock.fp.runFastPhase</span>(fp_path, Hinp_file, <span class="dt">K =</span> <span class="dv">12</span>, <span class="dt">numit =</span> <span class="dv">15</span>, <span class="dt">phased =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Above, the <code>SNPknock</code> package could not find <code>fastPHASE</code> because we did not provide the correct path (we cannot include third-party executable files within this package). However, if you install <code>fastPHASE</code> separately and provide <code>SNPknock</code> with the correct path, this will work.</p>
+<p>If the previous step worked for you, you can find the parameter estimates produced by <code>fastPHASE</code> in the following files:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">r_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_rhat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+alpha_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_alphahat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+theta_file =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_thetahat.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
+char_file  =<span class="st"> </span><span class="kw">paste</span>(fp_outPath, <span class="st">&quot;_origchars&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)</code></pre></div>
+<p>Otherwise, for the sake of this tutorial, you can use the example parameter files provided in the package installation directory:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">r_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;haplotypes_rhat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+alpha_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;haplotypes_alphahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+theta_file =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;haplotypes_thetahat.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)
+char_file  =<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;haplotypes_origchars&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;SNPknock&quot;</span>)</code></pre></div>
+<p>Then, we can construct the hidden Markov model with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hmm =<span class="st"> </span><span class="kw">SNPknock.fp.loadFit</span>(r_file, alpha_file, theta_file, char_file)</code></pre></div>
+</div>
+<div id="generating-knockoff-haplotypes" class="section level3">
+<h3>Generating knockoff haplotypes</h3>
+<p>Finally, we can use the hidden Markov model created above to generate knockoffs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Hk =<span class="st"> </span><span class="kw">SNPknock.knockoffHaplotypes</span>(H, hmm<span class="op">$</span>r, hmm<span class="op">$</span>alpha, hmm<span class="op">$</span>theta)
+<span class="kw">table</span>(Hk)</code></pre></div>
+<pre><code>## Hk
+##      0      1 
+## 207908  82892</code></pre>
+</div>
 </div>
 <div id="see-also" class="section level2">
 <h2>See also</h2>
 <p>If you want to see some basic usage of <code>SNPknock</code>, see the <a href="SNPknock.html">introductory vignette</a>.</p>
+<div id="refs" class="references">
+<div id="ref-Scheet2006">
+<p>Scheet, Paul, and Matthew Stephens. 2006. “A Fast and Flexible Statistical Model for Large-Scale Population Genotype Data: Applications to Inferring Missing Genotypes and Haplotypic Phase.” <em>Am J Hum Genet</em> 78 (4). The American Society of Human Genetics: 629–44. <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1424677/" class="uri">http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1424677/</a>.</p>
+</div>
+<div id="ref-Sesia2017">
+<p>Sesia, M., C. Sabatti, and E. J. Candès. 2017. “Gene Hunting with Knockoffs for Hidden Markov Models.” <em>ArXiv E-Prints</em>, June. <a href="https://arxiv.org/abs/1706.04677" class="uri">https://arxiv.org/abs/1706.04677</a>.</p>
+</div>
+</div>
 </div>
 
 

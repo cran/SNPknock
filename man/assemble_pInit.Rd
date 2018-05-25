@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastphase.R
 \name{assemble_pInit}
 \alias{assemble_pInit}
-\title{Compute the genotype initial distributions based on the fastPhase HMM}
+\title{Compute the genotype initial distributions based on the fastPHASE HMM}
 \usage{
 assemble_pInit(alpha)
 }
 \description{
-Compute the genotype initial distributions based on the fastPhase HMM
+Compute the genotype initial distributions based on the fastPHASE HMM
 }
 \keyword{internal}

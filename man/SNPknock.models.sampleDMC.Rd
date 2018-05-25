@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{SNPknock.models.sampleDMC}
 \alias{SNPknock.models.sampleDMC}
-\title{Sample discrete Markov chains.}
+\title{Sample discrete Markov chains}
 \usage{
 SNPknock.models.sampleDMC(pInit, Q, n = 1)
 }

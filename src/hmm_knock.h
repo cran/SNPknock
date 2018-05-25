@@ -19,9 +19,6 @@
 
 #ifndef KNOCKOFF_HMM_H
 #define KNOCKOFF_HMM_H
-/*
-MF knockoffs for a Hidden Markov Model
-*/
 
 #include "dmc_knock.h"
 #include "utils.h"
@@ -53,7 +50,7 @@ namespace knockoffs {
     std::vector<int> H, Ht, Xt;
     std::vector<double> weightsEmit, weights, fBeta;
     matrix beta;
-    unsigned int nStates, nEmitStates, p;
+    int nStates, nEmitStates, p;
     double betaSum;
   };
 }

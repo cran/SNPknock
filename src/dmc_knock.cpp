@@ -44,27 +44,27 @@ KnockoffDMC::~KnockoffDMC(){}
 
 std::vector<int> KnockoffDMC::sample(const std::vector<int> & X) {
   std::fill(Z.begin(), Z.end(), 0.0);  // Reset Z to zeros
-  for(unsigned int u=0; u<K; u++) {
-    for(unsigned int k=0; k<K; k++) {
+  for(int u=0; u<K; u++) {
+    for(int k=0; k<K; k++) {
       Z[k] += initP[u]*Q[0][u][k];
     }
   }
-  for(unsigned int k=0; k<K; k++) {
+  for(int k=0; k<K; k++) {
     W[k] = initP[k]*Q[0][k][X[1]] / Z[X[1]];
     Z_old[k] = Z[k];
   }  
   Xt[0] = weighted_choice(dis(gen),W);
 
   // Create the central p-2 knockoff
-  for(unsigned int j=1; j<p-1; j++){
+  for(int j=1; j<p-1; j++){
     std::fill(Z.begin(), Z.end(), 0.0);  // Reset Z to zeros
-    for(unsigned int u=0; u<K; u++) {
+    for(int u=0; u<K; u++) {
       tempQ = Q[j-1][X[j-1]][u] * Q[j-1][Xt[j-1]][u] / Z_old[u];
-      for(unsigned int k=0; k<K; k++) {
+      for(int k=0; k<K; k++) {
         Z[k] += tempQ*Q[j][u][k];
       }
     }
-    for(unsigned int k=0; k<K; k++) {
+    for(int k=0; k<K; k++) {
       W[k] = Q[j-1][X[j-1]][k] * Q[j-1][Xt[j-1]][k] * Q[j][k][X[j+1]] / (Z_old[k] * Z[X[j+1]]);
       Z_old[k] = Z[k];      
     }
@@ -73,10 +73,10 @@ std::vector<int> KnockoffDMC::sample(const std::vector<int> & X) {
 
   // Create the last knockoff
   double Zp = 0.0;
-  for(unsigned int u=0; u<K; u++) {
+  for(int u=0; u<K; u++) {
     Zp += Q[p-2][X[p-2]][u] * Q[p-2][Xt[p-2]][u] / Z_old[u];
   }
-  for(unsigned int k=0; k<K; k++) {
+  for(int k=0; k<K; k++) {
     W[k] = Q[p-2][X[p-2]][k] * Q[p-2][Xt[p-2]][k] / (Z_old[k] * Zp);
   }
   Xt[p-1] = weighted_choice(dis(gen),W);

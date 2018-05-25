@@ -2,15 +2,15 @@
 % Please edit documentation in R/fastphase.R
 \name{SNPknock.fp.runFastPhase}
 \alias{SNPknock.fp.runFastPhase}
-\title{Calls fastPhase to fit an HMM to genotype data.}
+\title{Calls fastPHASE to fit an HMM to genotype data}
 \usage{
 SNPknock.fp.runFastPhase(fp_path, X_file, out_path = NULL, K = 12,
-  numit = 25, seed = 1)
+  numit = 25, phased = FALSE, seed = 1)
 }
 \arguments{
-\item{fp_path}{a string with the path to the directory with the fastPhase executable.}
+\item{fp_path}{a string with the path to the directory with the fastPHASE executable.}
 
-\item{X_file}{a string with the path of the genotype input file containing X in fastPhase
+\item{X_file}{a string with the path of the genotype input file containing X in fastPHASE
 format (as created by \link{SNPknock.fp.writeX}).}
 
 \item{out_path}{a string with the path of the directory in which the parameter estimates 
@@ -21,6 +21,8 @@ in the R temporary directory will be used.}
 
 \item{numit}{the number of EM iterations (default: 25).}
 
+\item{phased}{whether the data are already phased (default: FALSE).}
+
 \item{seed}{the random seed for the EM algorithm (default: 1).}
 }
 \value{
@@ -29,30 +31,39 @@ A string containing the path of the directory in which the parameter estimates
         is used and the output is written in an R temporary directory.
 }
 \description{
-This function provides a wrapper for the fastPhase executable in order to fit an HMM to the
-genotype data. The software fastPhase will fit the HMM  to the genotype data and write the 
-corresponding parameter estimates in three separate files. 
-Since fastPhase is not an R package, this executable must be downloaded separately by the 
-user. Visit \url{http://scheet.org/software.html} for more information on how to obtain fastPhase.
+This function provides a wrapper for the fastPHASE executable in order to fit an HMM to either
+unphased genotype data or phased haplotype data. 
+The software fastPHASE will fit the HMM  to the genotype data and write the 
+corresponding parameter estimates in four separate files. 
+Since fastPHASE is not an R package, this executable must be downloaded separately by the 
+user. Visit \url{http://scheet.org/software.html} for more information on how to obtain fastPHASE.
 }
 \details{
-The software fastPhase saves the parameter estimates in three separate files whose names
+The software fastPHASE saves the parameter estimates in four separate files whose names
 begin with the string contained in 'out_path' and end with:
 \itemize{
   \item{"_rhat.txt"}
   \item{"_alphahat.txt"}
   \item{"_thetahat.txt"}
+  \item{"_origchars"}
 }
 
 The HMM for the genotype data can then be loaded from these files by calling
 \link{SNPknock.fp.loadFit}.
 }
 \examples{
-fp_path  = "~/.local/bin/fastPHASE" # Path to the fastPHASE executable
+fp_path  = "~/bin/fastPHASE" # Path to the fastPHASE executable
+
+# Run fastPHASE on unphased genotypes
 # Specify the path to the genotype input file in ".inp" format.
-# An example file can be found in the package installation folder.
-X_file = system.file("extdata", "X.inp", package = "SNPknock")
+# An example file containing unphased genotypes can be found in the package installation folder.
+X_file = system.file("extdata", "genotypes.inp", package = "SNPknock")
 fp_outPath = SNPknock.fp.runFastPhase(fp_path, X_file)
+
+# Run fastPHASE on phased haplotypes
+# An example file containing phased haplotypes can be found in the package installation folder.
+H_file = system.file("extdata", "haplotypes.inp", package = "SNPknock")
+fp_outPath = SNPknock.fp.runFastPhase(fp_path, H_file, phased=TRUE)
 
 }
 \references{
@@ -61,6 +72,7 @@ Scheet and Stephens,  A fast and flexible statistical model for large-scale popu
   \href{http://www.sciencedirect.com/science/article/pii/S000292970763701X}{http://www.sciencedirect.com/science/article/pii/S000292970763701X}
 }
 \seealso{
-Other fastphase: \code{\link{SNPknock.fp.loadFit}},
+Other fastPHASE: \code{\link{SNPknock.fp.loadFit_hmm}},
+  \code{\link{SNPknock.fp.loadFit}},
   \code{\link{SNPknock.fp.writeX}}
 }

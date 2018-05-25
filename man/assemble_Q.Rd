@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastphase.R
 \name{assemble_Q}
 \alias{assemble_Q}
-\title{Compute the genotype transition matrices based on the fastPhase HMM}
+\title{Compute the genotype transition matrices based on the fastPHASE HMM}
 \usage{
 assemble_Q(Q1)
 }
 \description{
-Compute the genotype transition matrices based on the fastPhase HMM
+Compute the genotype transition matrices based on the fastPHASE HMM
 }
 \keyword{internal}

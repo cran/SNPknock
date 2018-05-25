@@ -1,13 +1,21 @@
-#ifndef KNOCK_INTERFACE_CPP
-#define KNOCK_INTERFACE_CPP
+#ifndef INTERFACE_CPP
+#define INTERFACE_CPP
 
 #include <Rcpp.h>
-#include "knock_interface.h"
+#include "interface.h"
 
 using namespace Rcpp;
 
 vector numToVec(const Rcpp::NumericVector & v) {
   return(Rcpp::as<vector>(v));
+}
+
+ivector numToIntVec(const Rcpp::IntegerVector & v) {
+  ivector X(v.size(), 0);
+  for(int i=0; i<v.size(); i++) {
+      X[i] = v[i];
+  }
+  return(X);
 }
 
 vector2 numToVec2(const Rcpp::NumericVector & v, int dim1) {
@@ -21,7 +29,7 @@ vector2 numToVec2(const Rcpp::NumericVector & v, int dim1) {
   return(X);
 }
 
-ivector2 numToIntVec2(const Rcpp::NumericVector & v, int dim1) {
+ivector2 numToIntVec2(const Rcpp::IntegerVector & v, int dim1) {
   int dim2 = int(v.size()/dim1);
   ivector2 X(dim1, ivector(dim2, 0));
   for(int i=0; i<dim1; i++) {

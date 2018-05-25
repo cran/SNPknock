@@ -5,9 +5,45 @@
 
 using namespace Rcpp;
 
+// GenotypeModel_wrapper
+IntegerMatrix GenotypeModel_wrapper(SEXP X_, SEXP r_, SEXP alpha_, SEXP theta_, SEXP n_, SEXP p_, SEXP seed_, SEXP display_progress_);
+RcppExport SEXP _SNPknock_GenotypeModel_wrapper(SEXP X_SEXP, SEXP r_SEXP, SEXP alpha_SEXP, SEXP theta_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP seed_SEXP, SEXP display_progress_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type X_(X_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type r_(r_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type alpha_(alpha_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type theta_(theta_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type n_(n_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type seed_(seed_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type display_progress_(display_progress_SEXP);
+    rcpp_result_gen = Rcpp::wrap(GenotypeModel_wrapper(X_, r_, alpha_, theta_, n_, p_, seed_, display_progress_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// HaplotypeModel_wrapper
+IntegerMatrix HaplotypeModel_wrapper(SEXP X_, SEXP r_, SEXP alpha_, SEXP theta_, SEXP n_, SEXP p_, SEXP seed_, SEXP display_progress_);
+RcppExport SEXP _SNPknock_HaplotypeModel_wrapper(SEXP X_SEXP, SEXP r_SEXP, SEXP alpha_SEXP, SEXP theta_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP seed_SEXP, SEXP display_progress_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type X_(X_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type r_(r_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type alpha_(alpha_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type theta_(theta_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type n_(n_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type p_(p_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type seed_(seed_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type display_progress_(display_progress_SEXP);
+    rcpp_result_gen = Rcpp::wrap(HaplotypeModel_wrapper(X_, r_, alpha_, theta_, n_, p_, seed_, display_progress_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // knockoffDMC_wrapper
-NumericVector knockoffDMC_wrapper(SEXP X_, SEXP pInit_, SEXP Q_, SEXP n_, SEXP p_, SEXP K_, SEXP seed_);
-RcppExport SEXP _SNPknock_knockoffDMC_wrapper(SEXP X_SEXP, SEXP pInit_SEXP, SEXP Q_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP K_SEXP, SEXP seed_SEXP) {
+IntegerMatrix knockoffDMC_wrapper(SEXP X_, SEXP pInit_, SEXP Q_, SEXP n_, SEXP p_, SEXP K_, SEXP seed_, SEXP display_progress_);
+RcppExport SEXP _SNPknock_knockoffDMC_wrapper(SEXP X_SEXP, SEXP pInit_SEXP, SEXP Q_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP K_SEXP, SEXP seed_SEXP, SEXP display_progress_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,13 +54,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type p_(p_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type K_(K_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type seed_(seed_SEXP);
-    rcpp_result_gen = Rcpp::wrap(knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_));
+    Rcpp::traits::input_parameter< SEXP >::type display_progress_(display_progress_SEXP);
+    rcpp_result_gen = Rcpp::wrap(knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_, display_progress_));
     return rcpp_result_gen;
 END_RCPP
 }
 // knockoffHMM_wrapper
-NumericVector knockoffHMM_wrapper(SEXP X_, SEXP pInit_, SEXP Q_, SEXP pEmit_, SEXP n_, SEXP p_, SEXP K_, SEXP M_, SEXP seed_);
-RcppExport SEXP _SNPknock_knockoffHMM_wrapper(SEXP X_SEXP, SEXP pInit_SEXP, SEXP Q_SEXP, SEXP pEmit_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP K_SEXP, SEXP M_SEXP, SEXP seed_SEXP) {
+IntegerMatrix knockoffHMM_wrapper(SEXP X_, SEXP pInit_, SEXP Q_, SEXP pEmit_, SEXP n_, SEXP p_, SEXP K_, SEXP M_, SEXP seed_, SEXP display_progress_);
+RcppExport SEXP _SNPknock_knockoffHMM_wrapper(SEXP X_SEXP, SEXP pInit_SEXP, SEXP Q_SEXP, SEXP pEmit_SEXP, SEXP n_SEXP, SEXP p_SEXP, SEXP K_SEXP, SEXP M_SEXP, SEXP seed_SEXP, SEXP display_progress_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,14 +74,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type K_(K_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type M_(M_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type seed_(seed_SEXP);
-    rcpp_result_gen = Rcpp::wrap(knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_));
+    Rcpp::traits::input_parameter< SEXP >::type display_progress_(display_progress_SEXP);
+    rcpp_result_gen = Rcpp::wrap(knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_, display_progress_));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_SNPknock_knockoffDMC_wrapper", (DL_FUNC) &_SNPknock_knockoffDMC_wrapper, 7},
-    {"_SNPknock_knockoffHMM_wrapper", (DL_FUNC) &_SNPknock_knockoffHMM_wrapper, 9},
+    {"_SNPknock_GenotypeModel_wrapper", (DL_FUNC) &_SNPknock_GenotypeModel_wrapper, 8},
+    {"_SNPknock_HaplotypeModel_wrapper", (DL_FUNC) &_SNPknock_HaplotypeModel_wrapper, 8},
+    {"_SNPknock_knockoffDMC_wrapper", (DL_FUNC) &_SNPknock_knockoffDMC_wrapper, 8},
+    {"_SNPknock_knockoffHMM_wrapper", (DL_FUNC) &_SNPknock_knockoffHMM_wrapper, 10},
     {NULL, NULL, 0}
 };
 

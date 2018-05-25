@@ -4,7 +4,8 @@
 \alias{knockoffHMM_wrapper}
 \title{Wrapper for HMM knockoffs}
 \usage{
-knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_)
+knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_,
+  display_progress_)
 }
 \description{
 Wrapper for HMM knockoffs

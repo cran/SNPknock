@@ -2,12 +2,17 @@
 % Please edit documentation in R/fastphase.R
 \name{SNPknock.fp.writeX}
 \alias{SNPknock.fp.writeX}
-\title{Convert a genetic matrix X into the fastPhase input format.}
+\title{Convert a genetic matrix X into the fastPHASE input format}
 \usage{
-SNPknock.fp.writeX(X, out_file = NULL)
+SNPknock.fp.writeX(X, phased = FALSE, out_file = NULL)
 }
 \arguments{
-\item{X}{a matrix of size n-by-p containing the original variables.}
+\item{X}{either a matrix of size n-by-p containing unphased genotypes for n individuals, 
+or a matrix of size 2n-by-p containing phased haplotypes for n individuals.}
+
+\item{phased}{whether the data are phased (default: FALSE).
+If this is equal to TRUE, each pair of consecutive rows will be assumed to correspond to phased haplotypes from the 
+same individual.}
 
 \item{out_file}{a string containing the path of the output file onto which X will be written (default: NULL). 
 If this is equal to NULL, a temporary file in the R temporary directory will be used.}
@@ -17,15 +22,24 @@ A string containing the path of the output file onto which X was written. This i
 when the default option for `out_file` is used and X is written onto a temporary file in the R temporary directory.
 }
 \description{
-This function convert a genetic matrix X into the fastPhase input format and saves
-it to a user-specified file. Then, an HMM can be fitted by calling fastPhase with
+This function convert a genetic matrix X into the fastPHASE input format and saves
+it to a user-specified file. Then, an HMM can be fitted by calling fastPHASE with
 \link{SNPknock.fp.runFastPhase}.
 }
 \examples{
+# Convert unphased genotypes
 # Load an example data matrix X from the package installation directory.
-X_file = system.file("extdata", "X.RData", package = "SNPknock")
+X_file = system.file("extdata", "genotypes.RData", package = "SNPknock")
 load(X_file)
-Xinp_file = SNPknock.fp.writeX(X) # Write X in a temporary file
+# Write X in a temporary file
+Xinp_file = SNPknock.fp.writeX(X)
+
+# Convert phased haplotypes
+# Load an example data matrix H from the package installation directory.
+H_file = system.file("extdata", "haplotypes.RData", package = "SNPknock")
+load(H_file)
+# Write H in a temporary file
+Hinp_file = SNPknock.fp.writeX(H, phased=TRUE)
 
 }
 \references{
@@ -34,6 +48,7 @@ Scheet and Stephens,  A fast and flexible statistical model for large-scale popu
   \href{http://www.sciencedirect.com/science/article/pii/S000292970763701X}{http://www.sciencedirect.com/science/article/pii/S000292970763701X}
 }
 \seealso{
-Other fastphase: \code{\link{SNPknock.fp.loadFit}},
+Other fastPHASE: \code{\link{SNPknock.fp.loadFit_hmm}},
+  \code{\link{SNPknock.fp.loadFit}},
   \code{\link{SNPknock.fp.runFastPhase}}
 }
