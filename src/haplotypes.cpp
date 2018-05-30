@@ -1,3 +1,22 @@
+/*
+  This file is part of SNPknock.
+
+    Copyright (C) 2017-2018 Matteo Sesia
+
+    SNPknock is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SNPknock is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SNPknock.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef HAPLOTYPES_CPP
 #define HAPLOTYPES_CPP
 
@@ -40,7 +59,6 @@ HaplotypeModel::HaplotypeModel(const std::vector<double> & r, const matrix & alp
   // Knockoffs for Markov chains
   Z = std::vector<double> (nStates);
   Z_old = std::vector<double> (nStates);
-  Z_sums = std::vector<double> (3);
 }
 
 void HaplotypeModel::sampleViterbi(const std::vector<int> & X) {
@@ -108,63 +126,46 @@ void HaplotypeModel::sampleViterbi(const std::vector<int> & X) {
 
 void HaplotypeModel::knockoffMC(const std::vector<int> & H) {
   std::fill(Z_old.begin(), Z_old.end(), 1.0);
-  double weights_sum;
+  double weights_sum, Z_sum;
 
   for(int j=0; j<p; j++) {
     std::fill(weights.begin(), weights.end(), 1.0);
     std::fill(Z.begin(), Z.end(), 0.0);
-    std::fill(Z_sums.begin(), Z_sums.end(), 0.0);
     weights_sum = 0;
+    Z_sum = 0;
 
-    // First partition function
-    if( j==0 ) {
-      // Precompute sum for partition function
-      for(int k=0; k<nStates; k++) {
-        Z_sums[0] += a[j+1][k];
-      }
-      // Compute partition function
-      for(int k=0; k<nStates; k++) {
-        Z[k] += a[j][k] * Z_sums[0];
-        Z[k] += b[j+1] * a[j][k];
-      }
-    }
-
-    // All other partition functions
-    else{
-      // Precompute sums for partition function
-      for(int k=0; k<nStates; k++) {
-        Z_sums[0] += a[j][k]*a[j][k] / Z_old[k];
-        Z_sums[1] += a[j][k]*((double)(k==H[j-1])+(double)(k==Hk[j-1])) / Z_old[k];
-        Z_sums[2] += ((double)(k==H[j-1])*(double)(k==Hk[j-1])) / Z_old[k];
-      }
-      if( j < p-1) {
-        // Compute the 6 components of the central partition functions and add them up
-        for(int k=0; k<nStates; k++) {
-          Z[k] += a[j+1][k] * Z_sums[0];
-          Z[k] += a[j+1][k] * b[j] * Z_sums[1];
-          Z[k] += a[j+1][k] * b[j] * b[j] * Z_sums[2];
-          Z[k] += a[j][k] * a[j][k] * b[j+1] / Z_old[k];
-          if(j>0) {
-            Z[k] += a[j][k] * b[j] * b[j+1] * ((double)(k==H[j-1])+(double)(k==Hk[j-1])) / Z_old[k];
-            Z[k] += b[j] * b[j] * b[j+1] * ((double)(k==H[j-1])*(double)(k==Hk[j-1])) / Z_old[k];
-          }
-        }
+    // Precompute sum for partition function
+    for(int k=0; k<nStates; k++) {
+      if( j==0 ) {
+        Z_sum += a[j][k];
       }
       else {
-        // Compute the 3 components of the last partition function and add them up
-        for(int k=0; k<nStates; k++) {
-          Z[k] += Z_sums[0];
-          Z[k] += b[j] * Z_sums[1];
-          Z[k] += b[j] * b[j] * Z_sums[2];
+        Z_sum += (a[j][k] + (double)(k==H[j-1])) * (a[j][k] + (double)(k==Hk[j-1])) / Z_old[k];
+      }
+    }
+
+    // Compute partition function
+    for(int k=0; k<nStates; k++) {
+      if(j<p-1) {
+        Z[k] += a[j+1][k] * Z_sum;
+        if(j==0) {
+          Z[k] += b[j+1] * a[j][k];
+        }
+        else {
+          Z[k] += b[j+1] * (a[j][k] + (double)(k==H[j-1])) * (a[j][k] + (double)(k==Hk[j-1])) / Z_old[k];
         }
       }
     }
 
+    // Compute sampling weights
     for(int k=0; k<nStates; k++) {
-      if( j < p-1) {
-        weights[k] *= (a[j+1][k]+b[j+1]*(double)(k==H[j+1]));
+      if(j < p-1) {
+        weights[k] *= (a[j+1][H[j+1]]+b[j+1]*(double)(k==H[j+1]));
       }
-      if(j>0) {
+      if(j==0) {
+        weights[k] *= a[j][k];
+      }
+      else {
         weights[k] *= (a[j][k]+b[j]*(double)(k==H[j-1]));
         weights[k] *= (a[j][k]+b[j]*(double)(k==Hk[j-1]));
       }
@@ -172,6 +173,7 @@ void HaplotypeModel::knockoffMC(const std::vector<int> & H) {
       Z_old[k] = Z[k];
       weights_sum += weights[k];
     }
+
     // Normalize weights
     for(int k=0; k<nStates; k++) {
       weights[k] /= weights_sum;

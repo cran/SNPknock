@@ -23,6 +23,7 @@
 #include <vector>
 #include <random>
 #include "utils.h"
+#include <iostream>
 
 typedef std::vector< std::vector<double> > matrix;
 

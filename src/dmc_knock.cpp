@@ -1,7 +1,7 @@
 /*
   This file is part of SNPknock.
 
-    Copyright (C) 2017 Matteo Sesia
+    Copyright (C) 2017-2018 Matteo Sesia
 
     SNPknock is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,13 +46,13 @@ std::vector<int> KnockoffDMC::sample(const std::vector<int> & X) {
   std::fill(Z.begin(), Z.end(), 0.0);  // Reset Z to zeros
   for(int u=0; u<K; u++) {
     for(int k=0; k<K; k++) {
-      Z[k] += initP[u]*Q[0][u][k];
+      Z[k] += initP[u] * Q[0][u][k];
     }
   }
   for(int k=0; k<K; k++) {
-    W[k] = initP[k]*Q[0][k][X[1]] / Z[X[1]];
+    W[k] = initP[k] * Q[0][k][X[1]] / Z[X[1]];
     Z_old[k] = Z[k];
-  }  
+  }
   Xt[0] = weighted_choice(dis(gen),W);
 
   // Create the central p-2 knockoff
@@ -66,7 +66,7 @@ std::vector<int> KnockoffDMC::sample(const std::vector<int> & X) {
     }
     for(int k=0; k<K; k++) {
       W[k] = Q[j-1][X[j-1]][k] * Q[j-1][Xt[j-1]][k] * Q[j][k][X[j+1]] / (Z_old[k] * Z[X[j+1]]);
-      Z_old[k] = Z[k];      
+      Z_old[k] = Z[k];
     }
     Xt[j] = weighted_choice(dis(gen),W);
   }
@@ -80,7 +80,6 @@ std::vector<int> KnockoffDMC::sample(const std::vector<int> & X) {
     W[k] = Q[p-2][X[p-2]][k] * Q[p-2][Xt[p-2]][k] / (Z_old[k] * Zp);
   }
   Xt[p-1] = weighted_choice(dis(gen),W);
-
   return(Xt);
 }
 

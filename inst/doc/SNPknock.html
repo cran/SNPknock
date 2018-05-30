@@ -12,7 +12,7 @@
 
 <meta name="author" content="Matteo Sesia (msesia@stanford.edu)" />
 
-<meta name="date" content="2018-05-25" />
+<meta name="date" content="2018-05-30" />
 
 <title>Using SNPknock in R</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using SNPknock in R</h1>
 <h4 class="author"><em>Matteo Sesia (<a href="mailto:msesia@stanford.edu">msesia@stanford.edu</a>)</em></h4>
-<h4 class="date"><em>2018-05-25</em></h4>
+<h4 class="date"><em>2018-05-30</em></h4>
 
 
 
@@ -96,21 +96,21 @@ Q =<span class="st"> </span><span class="kw">array</span>(stats<span class="op">
 X =<span class="st"> </span><span class="kw">SNPknock.models.sampleDMC</span>(pInit, Q, <span class="dt">n=</span><span class="dv">100</span>)
 <span class="kw">print</span>(X[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## [1,]    0    0    1    1    3    3    1    0    0     2
-## [2,]    3    3    3    4    1    4    3    3    3     2
-## [3,]    3    1    1    1    3    3    0    2    2     4
-## [4,]    3    0    2    2    3    0    2    2    1     1
-## [5,]    4    0    1    4    3    3    2    1    1     3</code></pre>
+## [1,]    0    0    2    1    2    3    2    0    0     2
+## [2,]    3    3    2    4    2    3    1    3    3     3
+## [3,]    3    0    1    2    3    4    0    2    2     4
+## [4,]    3    0    3    3    3    0    2    2    1     1
+## [5,]    4    0    2    4    3    3    3    1    1     4</code></pre>
 <p>Above, each row of <code>X</code> contains an independent realization of the Markov chain.</p>
 <p>A knockoff copy of <code>X</code> can be sampled as follows.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Xk =<span class="st"> </span><span class="kw">SNPknock.knockoffDMC</span>(X, pInit, Q)
 <span class="kw">print</span>(Xk[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## [1,]    3    0    1    1    3    3    0    0    0     1
-## [2,]    3    3    1    1    0    0    4    3    2     2
-## [3,]    0    0    1    1    3    2    2    4    3     3
-## [4,]    3    4    2    4    0    1    1    1    1     1
-## [5,]    0    0    0    2    4    3    1    1    3     2</code></pre>
+## [1,]    3    2    2    2    2    2    1    3    0     0
+## [2,]    3    3    2    2    1    1    3    3    3     3
+## [3,]    0    3    0    3    3    0    0    2    2     2
+## [4,]    4    3    3    4    2    0    2    2    2     1
+## [5,]    0    0    3    3    3    3    1    3    4     2</code></pre>
 </div>
 <div id="knockoff-copies-of-hidden-markov-models" class="section level2">
 <h2>Knockoff copies of hidden Markov models</h2>

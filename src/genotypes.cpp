@@ -1,3 +1,22 @@
+/*
+  This file is part of SNPknock.
+
+    Copyright (C) 2017-2018 Matteo Sesia
+
+    SNPknock is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SNPknock is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SNPknock.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef GENOTYPES_CPP
 #define GENOTYPES_CPP
 
@@ -94,7 +113,6 @@ double GenotypeModel::emission_prob(int j, int x, int k, int l) {
 
 void GenotypeModel::sampleViterbi(const std::vector<int> & X) {
   // Compute backward weights
-
   std::fill(beta[p-1].begin(), beta[p-1].end(), 1.0);
 
   for(int j=p-2; j>=0; j--) {
@@ -169,17 +187,11 @@ void GenotypeModel::sampleViterbi(const std::vector<int> & X) {
     for(int k=0; k<K; k++) {
       for(int l=0; l<=k; l++) {
         int m = pair_to_index(k,l);     // New state
-        if(k==l) {
-          weights[m]  = a[j][k] * a[j][l];
-          weights[m] += b[j] * b[j] * (m == H[j-1]);
-          weights[m] += 2.0 * b[j] * a[j][k] * (m == H[j-1]);
-        }
-        else {
-          weights[m]  = 2.0 * a[j][k] * a[j][l];
-          weights[m] += b[j] * b[j] * (m == H[j-1]);
-          // Check for (partial) overlap between new state and old state
-          if( (k == table[H[j-1]][0]) | (l == table[H[j-1]][1]) )
-            weights[m] += b[j] * (a[j][k] + a[j][l]);
+        int k0  = table[H[j-1]][0];
+        int l0  = table[H[j-1]][1];
+        weights[m]  = (a[j][k]+b[j] * (double)(k==k0)) * (a[j][l]+b[j] * (double)(l==l0));
+        if(k!=l) {
+          weights[m] += (a[j][k]+b[j] * (double)(k==l0)) * (a[j][l]+b[j] * (double)(l==k0));
         }
         weights[m] *= emission_prob(j, X[j], m) * beta[j][m];
         weights_sum += weights[m];
@@ -212,7 +224,7 @@ void GenotypeModel::knockoffMC(const std::vector<int> & H) {
           if(j==0) {
             C[k12] = a[j][k1] * a[j][k2];
             if(k1!=k2) {
-              C[k12] += a[j][k1] * a[j][k2];            
+              C[k12] += a[j][k1] * a[j][k2];
             }
           }
           else {
@@ -220,12 +232,16 @@ void GenotypeModel::knockoffMC(const std::vector<int> & H) {
             int l2  = table[H[j-1]][1];
             int l1k = table[Hk[j-1]][0];
             int l2k = table[Hk[j-1]][1];
-            C[k12]  = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
-            C[k12] *= (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
-            if(k1!=k2) {
-              double tmp = (a[j][k1]+b[j]*(k2==l1)) * (a[j][k1]+b[j]*(k1==l2));
-              tmp *= (a[j][k1]+b[j]*(k2==l1k)) * (a[j][k1]+b[j]*(k1==l2k));
-              C[k12] += tmp;
+            if(k1==k2) {
+              C[k12]  = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
+              C[k12] *= (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
+            }
+            else {
+              double tmp1 = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
+              tmp1 += (a[j][k2]+b[j]*(k2==l1)) * (a[j][k1]+b[j]*(k1==l2));
+              double tmp2 = (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
+              tmp2 += (a[j][k2]+b[j]*(k2==l1k)) * (a[j][k1]+b[j]*(k1==l2k));
+              C[k12] = tmp1 * tmp2;
             }
           }
           C[k12] /= Z_old[k12];
@@ -246,12 +262,12 @@ void GenotypeModel::knockoffMC(const std::vector<int> & H) {
           Z[k12] += a[j+1][k1] * b[j+1] * C_sums_partial[k2];
           if(k1!=k2) {
             Z[k12] += a[j+1][k1] * a[j+1][k2] * C_sum;
-            Z[k12] += a[j+1][k2] * b[j+1] * C_sums_partial[k1];            
+            Z[k12] += a[j+1][k2] * b[j+1] * C_sums_partial[k1];
           }
         }
       }
     }
-    
+
     // Compute weights
     for(int k1=0; k1<K; k1++) {
       for(int k2=0; k2<=k1; k2++) {
@@ -261,13 +277,18 @@ void GenotypeModel::knockoffMC(const std::vector<int> & H) {
           int l2  = table[H[j-1]][1];
           int l1k = table[Hk[j-1]][0];
           int l2k = table[Hk[j-1]][1];
-          double weight_left = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
-          weight_left *= (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
-          if(k1!=k2) {
-            double tmp = (a[j][k1]+b[j]*(k2==l1)) * (a[j][k1]+b[j]*(k1==l2));
-            tmp *= (a[j][k1]+b[j]*(k2==l1k)) * (a[j][k1]+b[j]*(k1==l2k));
-            weight_left += tmp;
+          double weight_left = 1.0;
+          if(k1==k2) {
+            weight_left = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
+            weight_left *= (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
           }
+          else {
+            double tmp1 = (a[j][k1]+b[j]*(k1==l1)) * (a[j][k2]+b[j]*(k2==l2));
+            tmp1 += (a[j][k2]+b[j]*(k2==l1)) * (a[j][k1]+b[j]*(k1==l2));
+            double tmp2 = (a[j][k1]+b[j]*(k1==l1k)) * (a[j][k2]+b[j]*(k2==l2k));
+            tmp2 += (a[j][k2]+b[j]*(k2==l1k)) * (a[j][k1]+b[j]*(k1==l2k));
+            weight_left = tmp1 * tmp2;
+          }          
           weights[k12] *= weight_left;
         }
         if(j<p-1) {

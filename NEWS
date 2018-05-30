@@ -17,3 +17,8 @@ SNPknock 0.7.0 (05/24/2018)
 Improved memory efficiency and added support for multithreading.
 Added more efficient functions for generating knockoff copies of 
 unphased genotypes and phased haplotypes.
+
+SNPknock 0.7.1 (05/30/2018)
+---------------------------------------
+Fixed bug in the generation of knockoff copies for 
+unphased genotypes and phased haplotypes.
