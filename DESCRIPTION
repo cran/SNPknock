@@ -1,23 +1,30 @@
 Package: SNPknock
 Type: Package
 Title: Knockoffs for Hidden Markov Models and Genetic Data
-Version: 0.7.1
-Date: 2018-05-30
-Author: Matteo Sesia
-Maintainer: Matteo Sesia <msesia@stanford.edu>
-Description: Generates knockoff variables from discrete Markov chains and hidden Markov models, with specific support for genetic data.
-  For more information, see the website below and the accompanying paper: Sesia et al., 
-  "Gene Hunting with Knockoffs for Hidden Markov Models", 
-  2017, <arXiv:1706.04677>.
-URL: https://web.stanford.edu/group/candes/knockoffs/software/snpknock/
-License: GPL (>= 2)
+Version: 0.8.2
+Date: 2019-04-30
+Authors@R: c(
+           person("Matteo", "Sesia", , "msesia@stanford.edu", role = c("aut", "cre"))
+           )                              
+Description: Generate knockoffs for genetic data and hidden Markov models.
+  For more information, see the website below and the accompanying papers: 
+  "Gene hunting with hidden Markov model knockoffs", Sesia et al., Biometrika, 2019, (<doi:10.1093/biomet/asy033>).
+  "Multi-resolution localization of causal variants across the genome", Sesia et al., bioRxiv, 2019, (<doi:10.1101/631390>).
+License: GPL-3
+Language: en-US
 Depends: R (>= 3.3.0)
-Imports: Rcpp (>= 0.12.13)
+Imports: Rcpp (>= 0.12.13), Rdpack
+RdMacros: Rdpack
 Suggests: knitr, testthat, parallel, doParallel
-LinkingTo: Rcpp, RcppProgress
-RoxygenNote: 6.0.1
+LinkingTo: Rcpp, RcppArmadillo, RcppProgress
+RoxygenNote: 6.1.1
+URL: https://msesia.github.io/snpknock
+BugReports: https://github.com/msesia/snpknock/issues
 VignetteBuilder: knitr
+Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2018-05-30 17:07:19 UTC; msesia
+Packaged: 2019-05-16 23:35:28 UTC; msesia
+Author: Matteo Sesia [aut, cre]
+Maintainer: Matteo Sesia <msesia@stanford.edu>
 Repository: CRAN
-Date/Publication: 2018-05-30 17:51:41 UTC
+Date/Publication: 2019-05-17 20:50:14 UTC

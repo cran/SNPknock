@@ -2,12 +2,12 @@
 % Please edit documentation in R/RcppExports.R
 \name{knockoffHMM_wrapper}
 \alias{knockoffHMM_wrapper}
-\title{Wrapper for HMM knockoffs}
+\title{Wrapper for HMM group knockoffs}
 \usage{
-knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_,
+knockoffHMM_wrapper(X_, pInit_, Q_, pEmit_, n_, p_, K_, M_, seed_, G_,
   display_progress_)
 }
 \description{
-Wrapper for HMM knockoffs
+Wrapper for HMM group knockoffs
 }
 \keyword{internal}

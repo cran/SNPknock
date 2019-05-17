@@ -2,11 +2,12 @@
 % Please edit documentation in R/RcppExports.R
 \name{knockoffDMC_wrapper}
 \alias{knockoffDMC_wrapper}
-\title{Wrapper for DMC knockoffs}
+\title{Wrapper for DMC group knockoffs}
 \usage{
-knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_, display_progress_)
+knockoffDMC_wrapper(X_, pInit_, Q_, n_, p_, K_, seed_, G_,
+  display_progress_)
 }
 \description{
-Wrapper for DMC knockoffs
+Wrapper for DMC group knockoffs
 }
 \keyword{internal}

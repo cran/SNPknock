@@ -1,7 +1,7 @@
 /*
   This file is part of SNPknock.
 
-    Copyright (C) 2017 Matteo Sesia
+    Copyright (C) 2017-2019 Matteo Sesia
 
     SNPknock is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,16 +20,14 @@
 #ifndef KNOCKOFF_HMM_CPP
 #define KNOCKOFF_HMM_CPP
 
-#include "hmm_knock.h"
-
-using namespace knockoffs;
+#include "hmm.h"
 
 KnockoffHMM::KnockoffHMM(const std::vector<double> & _initP, const std::vector< matrix > & _Q, \
-                         const std::vector< matrix > & _emissionP, int seed) {
+                         const std::vector< matrix > & _emissionP, const std::vector<int>& G, int seed) {
   initP = _initP;
   Q = _Q;
   emissionP = _emissionP;
-  H_knockoffs = new KnockoffDMC(initP, Q, seed+100000);
+  H_knockoffs = new KnockoffDMC(initP, Q, G, seed+100000);
   nStates = initP.size();
   nEmitStates = emissionP[0].size();
   p = emissionP.size();
